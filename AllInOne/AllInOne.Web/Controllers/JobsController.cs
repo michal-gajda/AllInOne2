@@ -5,6 +5,9 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Logging;
 
+    /// <summary>
+    /// Kontroler do zarządzania zadaniami Hangfire
+    /// </summary>
     [Route("api/[controller]"), ApiController]
     public sealed class JobsController : ControllerBase
     {
@@ -17,6 +20,11 @@
             this._logger = logger;
         }
 
+        /// <summary>
+        /// Dodaje zadanie z opóźnieniem
+        /// </summary>
+        /// <param name="delaySeconds">Liczba sekund opóźnienia</param>
+        /// <returns>Informacje o dodanym zadaniu</returns>
         [HttpPost("delayed")]
         public IActionResult AddDelayedJob([FromQuery] int delaySeconds = 10)
         {
@@ -35,6 +43,11 @@
             });
         }
 
+        /// <summary>
+        /// Dodaje zadanie zapisu do pliku
+        /// </summary>
+        /// <param name="content">Zawartość pliku do zapisania</param>
+        /// <returns>Informacje o dodanym zadaniu</returns>
         [HttpPost("file")]
         public IActionResult AddFileJob([FromQuery] string content = "Generated from API")
         {
@@ -52,6 +65,10 @@
             });
         }
 
+        /// <summary>
+        /// Dodaje ciąg zadań (drugie zadanie uruchamia się po zakończeniu pierwszego)
+        /// </summary>
+        /// <returns>Informacje o dodanych zadaniach</returns>
         [HttpPost("chain")]
         public IActionResult AddJobChain()
         {
@@ -69,6 +86,12 @@
             });
         }
 
+        /// <summary>
+        /// Dodaje zadanie z parametrami
+        /// </summary>
+        /// <param name="name">Nazwa użytkownika</param>
+        /// <param name="count">Liczba iteracji</param>
+        /// <returns>Informacje o dodanym zadaniu</returns>
         [HttpPost("parameters")]
         public IActionResult AddParameterizedJob([FromQuery] string name = "APIUser", [FromQuery] int count = 3)
         {
@@ -84,6 +107,10 @@
             });
         }
 
+        /// <summary>
+        /// Dodaje proste zadanie w tle
+        /// </summary>
+        /// <returns>Informacje o dodanym zadaniu</returns>
         [HttpPost("simple")]
         public IActionResult AddSimpleJob()
         {
@@ -99,6 +126,10 @@
             });
         }
 
+        /// <summary>
+        /// Pobiera informacje o dostępnych endpoint-ach API
+        /// </summary>
+        /// <returns>Lista dostępnych endpoint-ów</returns>
         [HttpGet("info")]
         public IActionResult GetInfo()
         {
@@ -115,16 +146,24 @@
                     "GET /api/jobs/info - Te informacje",
                 },
                 dashboardUrl = "/hangfire",
+                swaggerUrl = "/swagger",
                 version = "ASP.NET Core 2.1 + .NET Framework 4.8.1",
             });
         }
     }
 
+    /// <summary>
+    /// Kontroler główny - przekierowuje na stronę główną
+    /// </summary>
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Strona główna - przekierowuje na dashboard
+        /// </summary>
+        /// <returns>Przekierowanie na stronę główną</returns>
         public IActionResult Index()
         {
-            return this.Redirect("/hangfire");
+            return this.Redirect("/");
         }
     }
 }
